@@ -4,6 +4,7 @@ public class Percolation {
     WeightedQuickUnionUF weighted;
     private int count;
     // Constructor
+    //To construct a weighted union graph
     public Percolation(int n) {
         if(n <= 0) {
             throw new IllegalArgumentException();
