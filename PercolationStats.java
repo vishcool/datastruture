@@ -53,8 +53,13 @@ public class PercolationStats {
 
     // Test client
     public static void main(String[] args) {
-        int n = StdIn.readInt(); // Grid size
-        int trials = StdIn.readInt(); // Number of trials
+        if (args.length < 2) {
+            System.out.println("Usage: java PercolationStats <grid size> <number of trials>");
+            return;
+        }
+
+        int n = Integer.parseInt(args[0]);
+        int trials = Integer.parseInt(args[1]);
 
         PercolationStats stats = new PercolationStats(n, trials);
 
