@@ -1,14 +1,13 @@
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private Node<Item> first;
     private Node<Item> last;
     private int size;
-    private final Random random;
 
     private static class Node<Item> {
 
@@ -16,25 +15,20 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         private Node<Item> next;
     }
 
-    // Construct an empty randomized queue
     public RandomizedQueue() {
         first = null;
         last = null;
         size = 0;
-        random = new Random();
     }
 
-    // Is the randomized queue empty?
     public boolean isEmpty() {
         return size == 0;
     }
 
-    // Return the number of items on the randomized queue
     public int size() {
         return size;
     }
 
-    // Add the item
     public void enqueue(Item item) {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
@@ -51,12 +45,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         size++;
     }
 
-    // Remove and return a random item
     public Item dequeue() {
         if (isEmpty()) {
             throw new NoSuchElementException("Queue is empty");
         }
-        int randomIndex = random.nextInt(size);
+        int randomIndex = StdRandom.uniformInt(size);
         Node<Item> current = first;
         Node<Item> previous = null;
         for (int i = 0; i < randomIndex; i++) {
@@ -76,12 +69,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return item;
     }
 
-    // Return a random item (but do not remove it)
     public Item sample() {
         if (isEmpty()) {
             throw new NoSuchElementException("Queue is empty");
         }
-        int randomIndex = random.nextInt(size);
+        int randomIndex = StdRandom.uniformInt(size);
         Node<Item> current = first;
         for (int i = 0; i < randomIndex; i++) {
             current = current.next;
@@ -89,7 +81,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return current.item;
     }
 
-    // Return an independent iterator over items in random order
     public Iterator<Item> iterator() {
         return new RandomizedQueueIterator();
     }
@@ -100,27 +91,27 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         private int current;
 
         public RandomizedQueueIterator() {
-            shuffledQueue = (Item[]) new Object[size];
+            shuffledQueue = (Item[]) new Object[size]; // Create a new array for shuff
             Node<Item> currentNode = first;
             for (int i = 0; i < size; i++) {
                 shuffledQueue[i] = currentNode.item;
                 currentNode = currentNode.next;
             }
-            shuffle(shuffledQueue);
+            fisherYatesShuffle(shuffledQueue);
             current = 0;
         }
 
-        private void shuffle(Item[] array) {
+        private void fisherYatesShuffle(Item[] array) {
             for (int i = array.length - 1; i > 0; i--) {
-                int index = random.nextInt(i + 1);
-                Item temp = array[index];
-                array[index] = array[i];
-                array[i] = temp;
+                int j = StdRandom.uniformInt(i + 1);
+                Item temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
             }
         }
 
         public boolean hasNext() {
-            return current < size;
+            return current < shuffledQueue.length;
         }
 
         public Item next() {
@@ -135,7 +126,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
     }
 
-    // Unit testing (required)
     public static void main(String[] args) {
         RandomizedQueue<Integer> rq = new RandomizedQueue<>();
         rq.enqueue(1);
